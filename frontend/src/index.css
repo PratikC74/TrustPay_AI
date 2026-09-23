@@ -1,0 +1,244 @@
+:root {
+  font-family: Inter, "Segoe UI", sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #0f172a;
+  background: #f8fafc;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: #f8fafc;
+  color: #0f172a;
+  font-size: 14px;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.16);
+  outline-offset: 2px;
+}
+
+button,
+input,
+select {
+  min-height: 40px;
+}
+
+button:not(:disabled):hover {
+  filter: brightness(0.97);
+}
+
+button:disabled {
+  opacity: 0.5;
+}
+
+@media (max-width: 900px) {
+  #root > div > div:nth-child(2) {
+    padding: 22px 18px !important;
+  }
+
+  #root > div > div:nth-child(2) > div:nth-child(2) {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 600px) {
+  #root > div > div:nth-child(2) {
+    padding: 18px 14px !important;
+  }
+
+  #root > div > div:nth-child(2) > div:first-child {
+    align-items: flex-start !important;
+    gap: 12px;
+  }
+
+  #root > div > div:nth-child(2) > div:nth-child(2),
+  #root > div > div:nth-child(2) > div:nth-child(3) > div,
+  #root > div > div:nth-child(2) > div:nth-child(4) > div {
+    grid-template-columns: 1fr !important;
+  }
+
+  #root > div > div:nth-child(2) > form > div,
+  #root > div > div:nth-child(2) > div:nth-child(4) > div,
+  #root > div > div:nth-child(2) > div:nth-child(5) {
+    align-items: stretch !important;
+  }
+
+  #root > div > div:nth-child(2) input,
+  #root > div > div:nth-child(2) select,
+  #root > div > div:nth-child(2) button {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+}
+
+#root {
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, p {
+  margin: 0;
+}
+
+.dashboard-page {
+  color: #0f172a;
+}
+
+.dashboard-header h1 {
+  color: #0f172a;
+}
+
+.kpi-grid {
+  align-items: stretch;
+}
+
+.kpi-card {
+  min-height: 96px;
+  transition: border-color 160ms ease, transform 160ms ease;
+}
+
+.kpi-card:hover,
+.transaction-card:hover {
+  border-color: #bfdbfe !important;
+  transform: translateY(-1px);
+}
+
+.kpi-card h3 {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.kpi-card h2 {
+  margin-top: 7px;
+  color: #0f172a;
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.risk-panel,
+.payment-panel,
+.filter-panel,
+.transaction-card,
+.audit-panel {
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.02);
+}
+
+.risk-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.risk-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+}
+
+.risk-low-card::before { background: #16a34a; }
+.risk-medium-card::before { background: #d97706; }
+.risk-high-card::before { background: #dc2626; }
+
+.risk-card h3 {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.risk-card h2 {
+  margin-top: 7px;
+  color: #0f172a;
+  font-size: 26px;
+  line-height: 1;
+}
+
+.payment-panel > div,
+.filter-panel > div {
+  align-items: center;
+}
+
+.payment-panel input,
+.payment-panel select,
+.filter-panel input,
+.filter-panel select {
+  height: 40px;
+  font-size: 14px;
+}
+
+.payment-panel button,
+.filter-panel button,
+.refresh-actions button,
+.dashboard-header button {
+  height: 40px;
+  font-size: 14px;
+  transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+
+.payment-panel button,
+.filter-panel button:first-of-type {
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+}
+
+.payment-panel button:hover,
+.filter-panel button:first-of-type:hover {
+  background: #1d4ed8 !important;
+  border-color: #1d4ed8 !important;
+}
+
+.transaction-card {
+  transition: border-color 160ms ease, transform 160ms ease;
+}
+
+.audit-panel table {
+  font-size: 14px;
+}
+
+@media (max-width: 700px) {
+  .dashboard-header {
+    align-items: flex-start !important;
+  }
+
+  .dashboard-header h1 {
+    font-size: 26px !important;
+  }
+
+  .dashboard-header button {
+    width: auto !important;
+  }
+}
+
+img, svg {
+  display: block;
+}
+

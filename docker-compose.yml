@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: trustpay-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: trustpay
+      POSTGRES_USER: trustpay_user
+      POSTGRES_PASSWORD: trustpay_password
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - trustpay_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  trustpay_postgres_data:
