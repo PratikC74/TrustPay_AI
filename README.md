@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # TrustPay AI
 
 AI-Powered Payment Risk & Decision Platform
@@ -45,3 +46,6 @@ TrustPayAI/
 
 
 
+=======
+# TrustPay_AI
+>>>>>>> 1903f74cc93979f057ab40eea51525b252d9ab2e
