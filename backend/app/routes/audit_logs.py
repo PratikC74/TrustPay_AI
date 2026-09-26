@@ -11,6 +11,7 @@ router = APIRouter(
 )
 
 
+@router.get("")
 @router.get("/")
 def get_audit_logs(
     db: Session = Depends(get_db),

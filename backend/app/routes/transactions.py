@@ -24,6 +24,7 @@ router = APIRouter(
 # ==================================================
 # CREATE TRANSACTION
 # ==================================================
+@router.post("", response_model=TransactionResponse)
 @router.post("/", response_model=TransactionResponse)
 def create_transaction(
     transaction_data: TransactionCreate,
@@ -137,6 +138,7 @@ def create_transaction(
 # ?risk_level=medium
 # ?search=TPA
 # ==================================================
+@router.get("", response_model=list[TransactionResponse])
 @router.get("/", response_model=list[TransactionResponse])
 def get_transactions(
     status: str | None = Query(default=None),
