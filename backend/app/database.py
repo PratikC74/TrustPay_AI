@@ -1,16 +1,11 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
 from app.config import settings
 
 
-# Render PostgreSQL usually provides:
-# postgresql://user:password@host:5432/database
-#
-# This project uses psycopg 3, so convert it to:
-# postgresql+psycopg://user:password@host:5432/database
-
-database_url = settings.database_url
+database_url = os.getenv("DATABASE_URL", settings.database_url)
 
 if database_url.startswith("postgres://"):
     database_url = database_url.replace(
@@ -18,17 +13,25 @@ if database_url.startswith("postgres://"):
         "postgresql+psycopg://",
         1
     )
-
-elif database_url.startswith("postgresql://"):
+elif database_url.startswith("postgresql://") and not database_url.startswith("postgresql+psycopg://"):
     database_url = database_url.replace(
         "postgresql://",
         "postgresql+psycopg://",
         1
     )
 
+# Fallback to SQLite if running in cloud (Render) without remote PostgreSQL configured
+is_cloud = bool(os.getenv("RENDER") or os.getenv("PORT") or os.getenv("VERCEL"))
+if is_cloud and "localhost" in database_url:
+    database_url = "sqlite:///./trustpay.db"
+
+connect_args = {}
+if database_url.startswith("sqlite"):
+    connect_args["check_same_thread"] = False
 
 engine = create_engine(
     database_url,
+    connect_args=connect_args,
     echo=False
 )
 
