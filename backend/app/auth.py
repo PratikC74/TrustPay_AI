@@ -8,13 +8,15 @@ from fastapi import Depends, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 
-from app.config import settings
-
-SECRET_KEY = settings.jwt_secret
+SECRET_KEY = os.getenv(
+    "AUTH_SECRET_KEY",
+    "trustpay-ai-development-secret-key",
+)
 
 ALGORITHM = "HS256"
 
 security = HTTPBearer()
+
 
 
 def get_current_user(
