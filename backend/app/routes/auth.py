@@ -19,10 +19,9 @@ router = APIRouter(
     tags=["Authentication"],
 )
 
-SECRET_KEY = os.getenv(
-    "AUTH_SECRET_KEY",
-    "trustpay-ai-development-secret-key",
-)
+from app.config import settings
+
+SECRET_KEY = settings.jwt_secret
 
 ALGORITHM = "HS256"
 TOKEN_EXPIRE_MINUTES = 60

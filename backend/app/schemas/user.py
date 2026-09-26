@@ -6,6 +6,7 @@ class UserCreate(BaseModel):
     email: str
     phone: str | None = None
     role: str = "user"
+    password: str | None = "user123"
 
 
 class UserResponse(BaseModel):

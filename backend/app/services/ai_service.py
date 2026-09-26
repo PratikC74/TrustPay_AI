@@ -98,10 +98,18 @@ def analyze_transaction(
     status: str,
     transaction_reference: str,
 ):
-    prompt = f"""
-You are a payment risk analysis assistant for TrustPay AI.
+    # If API key is not configured, directly return fallback analysis
+    if not settings.openai_api_key or settings.openai_api_key.startswith("sk-proj-placeholder"):
+        return fallback_risk_analysis(
+            amount,
+            currency,
+            payment_method,
+            status,
+            transaction_reference,
+        )
 
-Analyze this transaction:
+    prompt = f"""
+Analyze this transaction for risk:
 
 Amount: {amount}
 Currency: {currency}
@@ -109,48 +117,40 @@ Payment Method: {payment_method}
 Status: {status}
 Transaction Reference: {transaction_reference}
 
-Return ONLY valid JSON:
-
+Return ONLY valid JSON matching this structure:
 {{
-    "risk_score": 0,
+    "risk_score": 15,
     "risk_level": "low",
     "is_suspicious": false,
-    "reason": "reason here",
-    "ai_recommendation": "recommendation here"
+    "reason": "Reason for risk assessment",
+    "ai_recommendation": "Recommended action"
 }}
 """
 
     try:
-        response = client.responses.create(
-            model="gpt-5.6-luna",
-            instructions=(
-                "You are a financial transaction risk analysis assistant."
-            ),
-            input=prompt,
-            text={
-                "format": {
-                    "type": "json_object"
-                }
-            },
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a financial transaction risk analysis assistant for TrustPay AI. Respond strictly in JSON format.",
+                },
+                {"role": "user", "content": prompt},
+            ],
+            response_format={"type": "json_object"},
         )
 
-        return json.loads(response.output_text)
+        content = response.choices[0].message.content
+        if content:
+            return json.loads(content)
+        raise ValueError("Empty response from AI model")
 
-    except Exception as exc:
-        error_text = str(exc).lower()
-
-        # Use local risk engine when OpenAI quota is exhausted
-        if (
-            "insufficient_quota" in error_text
-            or "credit_balance_exhausted" in error_text
-            or "no credits remaining" in error_text
-        ):
-            return fallback_risk_analysis(
-                amount,
-                currency,
-                payment_method,
-                status,
-                transaction_reference,
-            )
-
-        raise
+    except Exception:
+        # Graceful fallback to rule-based engine on any AI error (quota, invalid key, network issue, model unavailable)
+        return fallback_risk_analysis(
+            amount,
+            currency,
+            payment_method,
+            status,
+            transaction_reference,
+        )

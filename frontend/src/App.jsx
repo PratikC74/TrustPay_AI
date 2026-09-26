@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 
 const summaryCardStyle = {
@@ -182,7 +182,7 @@ function App() {
   // ==================================================
   // Fetch Transactions
   // ==================================================
-  const fetchTransactions = async () => {
+  const fetchTransactions = useCallback(async () => {
     if (!loggedIn) {
       return;
     }
@@ -247,12 +247,12 @@ function App() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [loggedIn, search, statusFilter, riskFilter]);
 
   // ==================================================
   // Fetch Audit Logs
   // ==================================================
-  const fetchAuditLogs = async () => {
+  const fetchAuditLogs = useCallback(async () => {
     if (!loggedIn || !isAdmin) {
       return;
     }
@@ -296,17 +296,19 @@ function App() {
     } finally {
       setAuditLoading(false);
     }
-  };
+  }, [loggedIn, isAdmin]);
 
   // ==================================================
   // Load data after login
   // ==================================================
   useEffect(() => {
     if (loggedIn) {
-      fetchTransactions();
-      fetchAuditLogs();
+      Promise.resolve().then(() => {
+        fetchTransactions();
+        fetchAuditLogs();
+      });
     }
-  }, [loggedIn, isAdmin]);
+  }, [loggedIn, fetchTransactions, fetchAuditLogs]);
 
   // ==================================================
   // Handle Payment Form Changes
@@ -1079,7 +1081,6 @@ function App() {
             ...buttonStyle,
             background: "#ffffff",
             borderColor: "#e2e8f0",
-            color: "white",
             color: "#475569",
           }}
         >

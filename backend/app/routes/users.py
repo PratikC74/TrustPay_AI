@@ -12,16 +12,26 @@ router = APIRouter(
 )
 
 
+import bcrypt
+
+
 @router.post("/", response_model=UserResponse)
 def create_user(
     user_data: UserCreate,
     db: Session = Depends(get_db)
 ):
+    raw_password = user_data.password or "user123"
+    hashed_password = bcrypt.hashpw(
+        raw_password.encode("utf-8"),
+        bcrypt.gensalt()
+    ).decode("utf-8")
+
     user = User(
         name=user_data.name,
         email=user_data.email,
         phone=user_data.phone,
-        role=user_data.role
+        role=user_data.role,
+        password_hash=hashed_password,
     )
 
     db.add(user)
