@@ -1,0 +1,7 @@
+[project]
+name = "trust-pay-ai"
+version = "1.0.0"
+description = "AI-Powered Programmable Payment Platform"
+
+[tool.vercel]
+entrypoint = "backend/app/main.py"
