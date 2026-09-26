@@ -18,8 +18,42 @@ from app.models.audit_log import AuditLog
 from app.routes.audit_logs import router as audit_logs_router
 
 
+import bcrypt
+from app.database import SessionLocal, Base, engine
+
 # Create database tables
 Base.metadata.create_all(bind=engine)
+
+
+def seed_initial_data():
+    db = SessionLocal()
+    try:
+        admin_user = (
+            db.query(User)
+            .filter(User.email == "pratik@example.com")
+            .first()
+        )
+        if not admin_user:
+            hashed_pwd = bcrypt.hashpw(
+                b"admin123", bcrypt.gensalt()
+            ).decode("utf-8")
+            admin_user = User(
+                name="Pratik Admin",
+                email="pratik@example.com",
+                phone="1234567890",
+                role="admin",
+                password_hash=hashed_pwd,
+            )
+            db.add(admin_user)
+            db.commit()
+    except Exception as e:
+        db.rollback()
+        print(f"Error seeding initial data: {e}")
+    finally:
+        db.close()
+
+
+seed_initial_data()
 
 
 app = FastAPI(
