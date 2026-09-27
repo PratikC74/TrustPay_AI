@@ -1,6 +1,6 @@
+from datetime import datetime, timezone
 from sqlalchemy import String, Integer, DateTime
 from sqlalchemy.orm import Mapped, mapped_column
-from datetime import datetime
 from app.database import Base
 
 class AuditLog(Base):
@@ -13,5 +13,5 @@ class AuditLog(Base):
     old_status: Mapped[str | None] = mapped_column(String(30), nullable=True)
     new_status: Mapped[str | None] = mapped_column(String(30), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.utcnow, nullable=False
-    )
+        DateTime, default=lambda: datetime.now(timezone.utc), nullable=False
+    )
