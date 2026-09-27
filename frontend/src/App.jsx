@@ -208,8 +208,8 @@ function App() {
       const queryString = params.toString();
 
       const url = queryString
-        ? `/api/transactions/?${queryString}`
-        : "/api/transactions/";
+        ? `/api/transactions?${queryString}`
+        : "/api/transactions";
 
       const response = await fetch(url, {
         headers: {
@@ -227,6 +227,9 @@ function App() {
         try {
           data = JSON.parse(responseText);
         } catch {
+          if (response.status === 404) {
+            throw new Error("Transaction API endpoint not found (404)");
+          }
           throw new Error(
             `Invalid transaction response (${response.status})`
           );
@@ -235,7 +238,7 @@ function App() {
 
       if (!response.ok) {
         throw new Error(
-          data.detail || "Failed to fetch transactions"
+          data.detail || `Failed to fetch transactions (${response.status})`
         );
       }
 
@@ -260,7 +263,7 @@ function App() {
     try {
       setAuditLoading(true);
 
-      const response = await fetch("/api/audit-logs/", {
+      const response = await fetch("/api/audit-logs", {
         headers: {
           Authorization: `Bearer ${
             localStorage.getItem("trustpay_token") || ""
@@ -276,6 +279,9 @@ function App() {
         try {
           data = JSON.parse(responseText);
         } catch {
+          if (response.status === 404) {
+            throw new Error("Audit log API endpoint not found (404)");
+          }
           throw new Error(
             `Invalid audit log response (${response.status})`
           );
@@ -284,7 +290,7 @@ function App() {
 
       if (!response.ok) {
         throw new Error(
-          data.detail || "Failed to fetch audit logs"
+          data.detail || `Failed to fetch audit logs (${response.status})`
         );
       }
 
@@ -329,7 +335,7 @@ function App() {
     try {
       setError("");
 
-      const response = await fetch("/api/transactions/", {
+      const response = await fetch("/api/transactions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -356,15 +362,24 @@ function App() {
         try {
           data = JSON.parse(responseText);
         } catch {
+          if (response.status === 404) {
+            throw new Error("Payment API endpoint not found (404)");
+          }
+          if (response.status === 422) {
+            throw new Error("Invalid payment data submitted (422)");
+          }
+          if (response.status === 500) {
+            throw new Error("Payment could not be created due to server error (500)");
+          }
           throw new Error(
-            `Invalid server response (${response.status})`
+            `Payment creation failed with status ${response.status}`
           );
         }
       }
 
       if (!response.ok) {
         throw new Error(
-          data.detail || "Transaction creation failed"
+          data.detail || `Transaction creation failed (${response.status})`
         );
       }
 
@@ -397,7 +412,7 @@ function App() {
       setError("");
 
       const response = await fetch(
-        "/api/transactions/",
+        "/api/transactions",
         {
           headers: {
             Authorization: `Bearer ${
@@ -415,15 +430,18 @@ function App() {
         try {
           data = JSON.parse(responseText);
         } catch {
+          if (response.status === 404) {
+            throw new Error("Transaction API endpoint not found (404)");
+          }
           throw new Error(
-            `Invalid server response (${response.status})`
+            `Invalid transaction response (${response.status})`
           );
         }
       }
 
       if (!response.ok) {
         throw new Error(
-          data.detail || "Failed to fetch transactions"
+          data.detail || `Failed to fetch transactions (${response.status})`
         );
       }
 
